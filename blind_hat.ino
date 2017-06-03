@@ -10,7 +10,7 @@ int group4[] = {3,2,7};
 int group5[] = {5,2,7,8,12};
 int wholeGroup[] = {6,2,7,8,12,13};
 int mode = 0;
-int buttonState = 0;
+//int buttonState = digitalRead(3);
 int prevButState = 0;
 
 #include <LIDARLite.h>
@@ -23,9 +23,9 @@ LIDARLite myLidarLite;
 /**
  * changes the mode if button is pressed
  */
-void buttonPressed(){
+/*void buttonPressed(){
   mode = (mode + 1) % 3;
-}
+}*/
 /**
  * sets an array of pins to given state
  */
@@ -46,13 +46,20 @@ boolean inRange(double x, int a, int b){
 void normalMode(double dist){
 
 
-    if(mode == 1){
+   /* if(mode == 1){
       dist *= 2.05;
     }
     else if(mode == 2){
       dist *= 5;
     }
+*/
+  int sigVal = analogRead(A0);
+  float vol = sigVal * (1.0 / 1023.0);
 
+    if(vol>0.0)
+    {
+      dist*= (2.05/vol);
+    }
     
     if (dist < 5) {
       digitalWrite(2, pulseState);
@@ -104,18 +111,19 @@ void setup() {
   pinMode(8, OUTPUT);
   pinMode(12, OUTPUT);
   pinMode(13, OUTPUT);
-  pinMode(3, INPUT);
+  //pinMode(3, INPUT);
   Serial.begin(115200);
   myLidarLite.begin(0, true);
 }
 
 void loop() {
   // put your main code here, to run repeatedly:
-  buttonState = digitalRead(3);
-  if(buttonState != prevButState){
+  //buttonState = digitalRead(3);
+  /*if(buttonState != prevButState){
     buttonPressed();
     prevButState = buttonState;
-  }
+    
+  }*/
   
   unsigned int currentMillis = millis();
   
